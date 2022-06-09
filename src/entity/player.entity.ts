@@ -1,4 +1,4 @@
-import { Color, Entity, FlatColor, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
+import { Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
 import { CircleCollider } from '../component/circleCollider.component';
 
 export class Player extends Entity {
@@ -14,5 +14,16 @@ export class Player extends Entity {
                 new CircleCollider()
             ]
         });
+    }
+
+    public onCollisionStart(game: Game, other: Entity): void {
+        if (other.tag === 'planet') {
+            // "land" on the planet
+            const transform = this.getComponent<Transform>('Transform');
+            const planetTransform = other.getComponent<Transform>('Transform');
+            const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
+
+            transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
+        }
     }
 }
