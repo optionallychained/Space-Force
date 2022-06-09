@@ -1,7 +1,7 @@
 import { Color, State, Vec2 } from 'aura-2d';
 
-export const MAIN_STATE = new State({
-    name: 'main',
+export const MENU_STATE = new State({
+    name: 'menu',
     init: (game) => {
         game.text.addString(
             'ld38 remake',
