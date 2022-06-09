@@ -1,9 +1,13 @@
-import { Color, State, Vec2 } from 'aura-2d';
-import { GravityField } from '../entity/gravityField.entity';
+import { Angle, Color, Physics, State, Transform, Vec2 } from 'aura-2d';
+import { Coin } from '../entity/coin.entity';
+import { Player } from '../entity/player.entity';
+import { CircleCollision } from '../system/circleCollision.system';
 
 export const MENU_STATE = new State({
     name: 'menu',
     init: (game) => {
+        game.addSystems(Physics, CircleCollision);
+
         game.text.addString(
             'ld38 remake',
             new Vec2(-5 * 50, 0),
@@ -11,7 +15,14 @@ export const MENU_STATE = new State({
             Color.white()
         );
 
-        game.world.addEntity(new GravityField(new Vec2(0, -200), new Vec2(200, 200)));
+        // collision test
+        game.world.addEntity(new Coin(new Vec2(0, -100)));
+        const player = new Player();
+        const transform = player.getComponent<Transform>('Transform');
+        transform.position.set(100, -100);
+        transform.velocity.set(0, 100);
+        transform.rotate(Angle.toRadians(-90));
+        game.world.addEntity(player);
     },
     end: (game) => { },
     tick: (game) => { }

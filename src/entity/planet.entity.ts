@@ -1,4 +1,5 @@
 import { Color, Entity, FlatColor, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
+import { CircleCollider } from '../component/circleCollider.component';
 
 export class Planet extends Entity {
 
@@ -9,7 +10,8 @@ export class Planet extends Entity {
                 new Transform(position, scale),
                 new Shader(ShaderPrograms.BASIC),
                 new Model(Geometries.CIRCLE),
-                new FlatColor(color)
+                new FlatColor(color),
+                new CircleCollider()
             ]
         });
     }
