@@ -1,4 +1,4 @@
-import { Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
+import { Angle, Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
 import { CircleCollider } from '../component/circleCollider.component';
 import { Fuel } from '../component/fuel.component';
 import { Mass } from '../component/mass.component';
@@ -68,5 +68,11 @@ export class Player extends Entity {
 
     public thrustOff(): void {
         this.getComponent<Thrust>('Thrust').value = 0;
+    }
+
+    public rotate(dir: 1 | -1): void {
+        if (!this.landed) {
+            this.getComponent<Transform>('Transform').rotate(Angle.toRadians(2) * dir);
+        }
     }
 }
