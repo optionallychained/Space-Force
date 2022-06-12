@@ -32,7 +32,7 @@ export class Player extends Entity {
             const planetTransform = other.getComponent<Transform>('Transform');
             const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
 
-            transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
+            transform.rotate(-transform.angle + Vec2.angleBetween(direction, new Vec2(0, 1)) * (direction.x < 0 ? -1 : 1));
             transform.velocity.set(0, 0);
             this.landed = true;
 
