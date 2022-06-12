@@ -1,18 +1,20 @@
 import { Vec2 } from 'aura-2d';
 import { Level } from './levels';
 
-export const LEVEL_ONE = (worldDimensions: Vec2): Level => ({
+export const LEVEL_TWO = (worldDimensions: Vec2): Level => ({
     title: {
-        text: 'learning the ropes',
+        text: 'picking it up',
         fontSize: 50
     },
     description: {
-        text: 'get to the green planet',
-        fontSize: 30
+        text: 'pick up the coin and get to the green planet',
+        fontSize: 22
     },
     playerPosition: new Vec2(0, -worldDimensions.y / 2 + 150),
     playerFuel: 100,
-    pickupPositions: [],
+    pickupPositions: [
+        new Vec2(0, 150)
+    ],
     planets: [
         {
             position: new Vec2(0, -worldDimensions.y / 2 + 100),

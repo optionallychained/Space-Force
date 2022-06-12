@@ -4,10 +4,16 @@ import { FuelBar } from '../entity/fuelBar.entity';
 import { Planet, PlanetType } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
 import { LEVEL_ONE } from './1';
+import { LEVEL_TWO } from './2';
+
+export interface LevelText {
+    text: string;
+    fontSize: number;
+}
 
 export interface Level {
-    name: string;
-    description: string;
+    title: LevelText,
+    description: LevelText,
     playerPosition: Vec2;
     playerFuel: number;
     pickupPositions: Array<Vec2>;
@@ -21,7 +27,8 @@ export interface Level {
 }
 
 const levels: Array<(worldDimensions: Vec2) => Level> = [
-    LEVEL_ONE
+    LEVEL_ONE,
+    LEVEL_TWO
 ];
 
 export const loadLevel = (game: Game, num: number): void => {
@@ -54,6 +61,6 @@ export const loadLevel = (game: Game, num: number): void => {
     game.setData('requiredPoints', requiredPoints);
     game.setData('points', 0);
     game.setData('displayLevelText', true);
-    game.setData('levelTitle', selectedLevel.name);
+    game.setData('levelTitle', selectedLevel.title);
     game.setData('levelDescription', selectedLevel.description);
 };

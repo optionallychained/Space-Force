@@ -2,7 +2,7 @@ import { Color, Keys, State, Transform, Vec2 } from 'aura-2d';
 import { Fuel } from '../component/fuel.component';
 import { Particle } from '../entity/particle.entity';
 import { Player } from '../entity/player.entity';
-import { loadLevel } from '../levels/levels';
+import { LevelText, loadLevel } from '../levels/levels';
 import { CircleCollision } from '../system/circleCollision.system';
 import { Physics } from '../system/physics.system';
 
@@ -11,7 +11,7 @@ export const GAME_STATE = new State({
     init: (game) => {
         game.addSystems(Physics, CircleCollision);
 
-        loadLevel(game, 0);
+        loadLevel(game, 1);
     },
     end: (game) => {
         game.removeSystems('Physics', 'Collision');
@@ -89,20 +89,20 @@ export const GAME_STATE = new State({
         }
 
         if (game.getData<boolean>('displayLevelText')) {
-            const title = game.getData<string>('levelTitle');
-            const desc = game.getData<string>('levelDescription');
+            const title = game.getData<LevelText>('levelTitle');
+            const desc = game.getData<LevelText>('levelDescription');
 
             game.text.addString(
-                title,
-                new Vec2(-(title.length - 1) * 0.5 * 50, game.world.dimensions.y / 2 - 50),
-                new Vec2(50, 50),
+                title.text,
+                new Vec2(-(title.text.length - 1) * 0.5 * title.fontSize, game.world.dimensions.y / 2 - title.fontSize),
+                new Vec2(title.fontSize, title.fontSize),
                 Color.cyan()
             );
 
             game.text.addString(
-                desc,
-                new Vec2(-(desc.length - 1) * 0.5 * 30, game.world.dimensions.y / 2 - 120),
-                new Vec2(30, 30),
+                desc.text,
+                new Vec2(-(desc.text.length - 1) * 0.5 * desc.fontSize, game.world.dimensions.y / 2 - title.fontSize - desc.fontSize - 35),
+                new Vec2(desc.fontSize, desc.fontSize),
                 Color.yellow()
             );
         }
