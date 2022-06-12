@@ -23,7 +23,7 @@ export class FuelBar extends Entity {
 
         if (fuel) {
             const transform = this.getComponent<Transform>('Transform');
-            transform.scale.setX(transform.initialScale.x * fuel.value / 100);
+            transform.scale.setX(transform.initialScale.x * fuel.value / fuel.initialValue);
         }
     }
 }
