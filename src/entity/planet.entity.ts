@@ -7,14 +7,14 @@ import { GravityField } from './gravityField.entity';
 export class Planet extends Entity {
 
     // make a pair of Planet + GravityField (visual indicator) w/ GravityField of appropriate scale
-    public static makePair(position: Vec2, scale: Vec2, color: Color, mass = 1, fieldRadius = 1): [Planet, GravityField] {
+    public static makePair(position: Vec2, scale: Vec2, color: Color, mass: number, fieldRadius: number): [Planet, GravityField] {
         return [
             new Planet(position, scale, color, mass, fieldRadius),
             new GravityField(position, new Vec2(fieldRadius * 2, fieldRadius * 2))
         ];
     }
 
-    constructor(position: Vec2, scale: Vec2, color: Color, mass = 1, fieldRadius = 1) {
+    constructor(position: Vec2, scale: Vec2, color: Color, mass: number, fieldRadius: number) {
         super({
             tag: 'planet',
             components: [

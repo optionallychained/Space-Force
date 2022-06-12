@@ -1,4 +1,4 @@
-import { Game, System, Transform, Vec2 } from 'aura-2d';
+import { Entity, Game, System, Transform, Vec2 } from 'aura-2d';
 import { Gravity } from '../component/gravity.component';
 import { Mass } from '../component/mass.component';
 import { Thrust } from '../component/thrust.component';
@@ -27,30 +27,35 @@ export class Physics extends System {
             const moverMass = mover.getComponent<Mass>('Mass').value;
 
             // movers may be affected by multiple gravity sources at once; add up their forces before calculating the resultant acceleration
-            const totalForce = new Vec2();
-            for (const source of gravitySources) {
-                const sourceTransform = source.getComponent<Transform>('Transform');
-                const sourceMass = source.getComponent<Mass>('Mass').value;
+            const gravitationalForce = gravitySources.reduce(
+                (force: Vec2, source: Entity): Vec2 => {
+                    const sourceTransform = source.getComponent<Transform>('Transform');
+                    const sourceMass = source.getComponent<Mass>('Mass').value;
 
-                const distance = Vec2.distanceBetween(moverTransform.position, sourceTransform.position);
+                    const distance = Vec2.distanceBetween(moverTransform.position, sourceTransform.position);
 
-                // if the mover is inside the source gravity field, calculate the gravitational force on the mover and add it to totalForce
-                if (Math.abs(distance) < source.getComponent<Gravity>('Gravity').fieldRadius) {
-                    const gravitationalForce = Vec2.scale(
-                        // force is applied in the direction mover -> source, "pulling" the mover towards the source
-                        Vec2.normalize(Vec2.sub(sourceTransform.position, moverTransform.position)),
-                        // gravitational force w/ arbitrary g === 0.25
-                        0.25 * ((moverMass * sourceMass) / distance)
-                    );
+                    // if the mover is inside the source field, add the calculated gravitational force to the totalForce
+                    if (Math.abs(distance) < source.getComponent<Gravity>('Gravity').fieldRadius) {
+                        return Vec2.add(
+                            force,
+                            Vec2.scale(
+                                // force is applied in the direction mover -> source, "pulling" the mover towards the source
+                                Vec2.normalize(Vec2.sub(sourceTransform.position, moverTransform.position)),
+                                // gravitational force w/ arbitrary g === 0.25
+                                0.25 * ((moverMass * sourceMass) / distance)
+                            )
+                        );
+                    }
 
-                    totalForce.set(totalForce.x + gravitationalForce.x, totalForce.y + gravitationalForce.y);
-                }
-            }
+                    return force;
+                },
+                new Vec2()
+            );
 
             // a = f / m
             const acceleration = Vec2.add(
                 // total gravity affect
-                Vec2.scale(totalForce, 1 / moverMass),
+                Vec2.scale(gravitationalForce, 1 / moverMass),
                 // mover thrust affect (applied in mover's forward direction)
                 Vec2.scale(moverTransform.up, 1 / moverMass * mover.getComponent<Thrust>('Thrust').value)
             );
