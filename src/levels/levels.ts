@@ -5,6 +5,7 @@ import { Planet, PlanetType } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
 import { LEVEL_ONE } from './1';
 import { LEVEL_TWO } from './2';
+import { LEVEL_THREE } from './3';
 
 export interface LevelText {
     text: string;
@@ -28,7 +29,8 @@ export interface Level {
 
 const levels: Array<(worldDimensions: Vec2) => Level> = [
     LEVEL_ONE,
-    LEVEL_TWO
+    LEVEL_TWO,
+    LEVEL_THREE
 ];
 
 export const loadLevel = (game: Game, num: number): void => {
