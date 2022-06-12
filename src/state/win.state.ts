@@ -1,10 +1,10 @@
 import { Color, Keys, State, Vec2 } from 'aura-2d';
 
-export const DEAD_STATE = new State({
-    name: 'dead',
+export const WIN_STATE = new State({
+    name: 'win',
     init: (game) => {
         game.text.addString(
-            'dead',
+            'win',
             new Vec2(),
             new Vec2(50, 50),
             Color.white()

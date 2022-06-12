@@ -6,20 +6,19 @@ import { Thrust } from '../component/thrust.component';
 
 export class Player extends Entity {
 
-    private launchThrust = 0;
     private landed = false;
 
-    constructor() {
+    constructor(position: Vec2, fuel: number) {
         super({
             tag: 'player',
             components: [
-                new Transform(new Vec2(0, 300), new Vec2(30, 40)),
+                new Transform(position, new Vec2(25, 25)),
                 new Shader(ShaderPrograms.BASIC),
                 new Model(Geometries.TRIANGLE),
                 new FlatColor(Color.white()),
                 new CircleCollider(),
                 new Mass(15),
-                new Fuel(100),
+                new Fuel(fuel),
                 new Thrust(50)
             ]
         });
@@ -27,23 +26,27 @@ export class Player extends Entity {
 
     public onCollisionStart(game: Game, other: Entity): void {
         if (other.tag === 'planet') {
-            // death condition
-            if (other.hasComponent('Deadly')) {
-                game.switchToState('dead');
-            }
-            else {
-                const transform = this.getComponent<Transform>('Transform');
-                const planetTransform = other.getComponent<Transform>('Transform');
-                const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
+            // "land" on the planet
+            const transform = this.getComponent<Transform>('Transform');
+            const planetTransform = other.getComponent<Transform>('Transform');
+            const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
 
-                // "land" on the planet
-                transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
-                transform.velocity.set(0, 0);
-                this.landed = true;
+            transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
+            transform.velocity.set(0, 0);
+            this.landed = true;
 
-                // provide enough launch thrust to overcome the planet's gravity
-                this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
-            }
+            // provide enough launch thrust to overcome the planet's gravity
+            this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
+        }
+
+        // progress
+        if (other.hasComponent('Point')) {
+            game.setData('points', game.getData<number>('points') + 1);
+        }
+
+        // death
+        if (other.hasComponent('Deadly')) {
+            game.switchToState('dead');
         }
     }
 

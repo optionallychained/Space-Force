@@ -1,9 +1,8 @@
 import { Color, Keys, State, Transform, Vec2 } from 'aura-2d';
 import { Fuel } from '../component/fuel.component';
-import { FuelBar } from '../entity/fuelBar.entity';
 import { Particle } from '../entity/particle.entity';
-import { Planet } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
+import { loadLevel } from '../levels/levels';
 import { CircleCollision } from '../system/circleCollision.system';
 import { Physics } from '../system/physics.system';
 
@@ -12,36 +11,23 @@ export const GAME_STATE = new State({
     init: (game) => {
         game.addSystems(Physics, CircleCollision);
 
-        game.world.addEntities(
-            ...Planet.makePair(new Vec2(200, -100), new Vec2(100, 100), true, 2000, 300),
-            ...Planet.makePair(new Vec2(-200, -100), new Vec2(100, 100), false, 1000, 300),
-            new FuelBar(new Vec2(0, -game.world.dimensions.y / 2 + 25), game.world.dimensions.x - 50),
-            new Player(),
-        );
+        loadLevel(game, 0);
     },
-    end: (game) => { },
+    end: (game) => {
+        game.removeSystems('Physics', 'Collision');
+        game.world.clearEntities();
+        game.text.clearEntities();
+    },
     tick: (game) => {
         game.text.clearEntities();
 
         const player = game.world.filterEntitiesByTag('player')[0] as Player | undefined;
+        const fuel = player?.getComponent<Fuel>('Fuel').value ?? -1;
 
         if (player) {
             const transform = player.getComponent<Transform>('Transform');
-            const fuel = player.getComponent<Fuel>('Fuel').value;
 
-            // death conditions
-            if (
-                transform.position.x - transform.scale.x / 2 >= game.world.dimensions.x / 2
-                ||
-                transform.position.x + transform.scale.x / 2 <= -game.world.dimensions.x / 2
-                ||
-                transform.position.y - transform.scale.y / 2 >= game.world.dimensions.y / 2
-                ||
-                transform.position.y + transform.scale.y / 2 <= -game.world.dimensions.y / 2
-            ) {
-                game.switchToState('dead');
-            }
-
+            // movement
             if (game.input.isKeyDown(Keys.A)) {
                 player.rotate(-1);
             }
@@ -57,27 +43,66 @@ export const GAME_STATE = new State({
                     const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
                     game.world.addEntity(new Particle(particlePosition, transform.angle));
                 }
+
+                game.setData('displayLevelText', false);
             }
             else {
                 player.thrustOff();
             }
 
-            if (!fuel) {
-                game.text.addString(
-                    'restart:[R]',
-                    new Vec2(-10 * 0.5 * 25, -game.world.dimensions.y / 2 + 25),
-                    new Vec2(25, 25),
-                    Color.yellow()
-                )
+            // death condition
+            if (
+                transform.position.x - transform.scale.x / 2 >= game.world.dimensions.x / 2
+                ||
+                transform.position.x + transform.scale.x / 2 <= -game.world.dimensions.x / 2
+                ||
+                transform.position.y - transform.scale.y / 2 >= game.world.dimensions.y / 2
+                ||
+                transform.position.y + transform.scale.y / 2 <= -game.world.dimensions.y / 2
+            ) {
+                game.switchToState('dead');
+            }
+
+            // win condition
+            if (game.getData<number>('points') >= game.getData<number>('requiredPoints')) {
+                game.switchToState('win');
             }
         }
 
-
+        // info readouts
         game.text.addString(
             'Fuel',
             new Vec2(-3 * 0.5 * 25, -game.world.dimensions.y / 2 + 25 + 35),
             new Vec2(25, 25),
             Color.white()
         );
+
+        if (!fuel) {
+            game.text.addString(
+                'restart:[R]',
+                new Vec2(-10 * 0.5 * 25, -game.world.dimensions.y / 2 + 25),
+                new Vec2(25, 25),
+                Color.yellow()
+            )
+        }
+
+        if (game.getData<boolean>('displayLevelText')) {
+            const title = game.getData<string>('levelTitle');
+            const desc = game.getData<string>('levelDescription');
+
+            game.text.addString(
+                title,
+                new Vec2(-(title.length - 1) * 0.5 * 50, game.world.dimensions.y / 2 - 50),
+                new Vec2(50, 50),
+                Color.cyan()
+            );
+
+            game.text.addString(
+                desc,
+                new Vec2(-(desc.length - 1) * 0.5 * 30, game.world.dimensions.y / 2 - 120),
+                new Vec2(30, 30),
+                Color.yellow()
+            );
+        }
     }
 });

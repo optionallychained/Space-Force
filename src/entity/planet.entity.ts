@@ -3,34 +3,50 @@ import { CircleCollider } from '../component/circleCollider.component';
 import { Deadly } from '../component/deadly.component';
 import { Gravity } from '../component/gravity.component';
 import { Mass } from '../component/mass.component';
+import { Point } from '../component/point.component';
 import { GravityField } from './gravityField.entity';
+
+export type PlanetType = 'start' | 'deadly' | 'target' | 'musttouch';
 
 export class Planet extends Entity {
 
     // make a pair of Planet + GravityField (visual indicator) w/ GravityField of appropriate scale
-    public static makePair(position: Vec2, scale: Vec2, deadly: boolean, mass: number, fieldRadius: number): [Planet, GravityField] {
+    public static makePair(position: Vec2, size: number, mass: number, fieldRadius: number, type: PlanetType): [Planet, GravityField] {
         return [
-            new Planet(position, scale, deadly, mass, fieldRadius),
+            new Planet(position, size, mass, fieldRadius, type),
             new GravityField(position, new Vec2(fieldRadius * 2, fieldRadius * 2))
         ];
     }
 
-    constructor(position: Vec2, scale: Vec2, deadly: boolean, mass: number, fieldRadius: number) {
+    constructor(position: Vec2, size: number, mass: number, fieldRadius: number, type: PlanetType) {
         super({
             tag: 'planet',
             components: [
-                new Transform(position, scale),
+                new Transform(position, new Vec2(size, size)),
                 new Shader(ShaderPrograms.BASIC),
                 new Model(Geometries.CIRCLE),
-                new FlatColor(deadly ? Color.red() : Color.green()),
                 new CircleCollider(),
                 new Mass(mass),
                 new Gravity(fieldRadius)
             ]
         });
 
-        if (deadly) {
-            this.addComponent(new Deadly());
+        switch (type) {
+            case 'start':
+                this.addComponent(new FlatColor(Color.yellow()));
+                break;
+
+            case 'target':
+                this.addComponents(new FlatColor(Color.green()), new Point());
+                break;
+
+            case 'musttouch':
+                this.addComponents(new FlatColor(Color.blue()), new Point());
+                break;
+
+            case 'deadly':
+                this.addComponents(new FlatColor(Color.red()), new Deadly());
+                break;
         }
     }
 }
