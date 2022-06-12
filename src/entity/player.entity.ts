@@ -27,17 +27,23 @@ export class Player extends Entity {
 
     public onCollisionStart(game: Game, other: Entity): void {
         if (other.tag === 'planet') {
-            const transform = this.getComponent<Transform>('Transform');
-            const planetTransform = other.getComponent<Transform>('Transform');
-            const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
+            // death condition
+            if (other.hasComponent('Deadly')) {
+                game.switchToState('dead');
+            }
+            else {
+                const transform = this.getComponent<Transform>('Transform');
+                const planetTransform = other.getComponent<Transform>('Transform');
+                const direction = Vec2.normalize(Vec2.sub(transform.position, planetTransform.position));
 
-            // "land" on the planet
-            transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
-            transform.velocity.set(0, 0);
-            this.landed = true;
+                // "land" on the planet
+                transform.rotate(Math.acos(Vec2.dot(transform.up, direction)));
+                transform.velocity.set(0, 0);
+                this.landed = true;
 
-            // provide enough launch thrust to overcome the planet's gravity
-            this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
+                // provide enough launch thrust to overcome the planet's gravity
+                this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
+            }
         }
     }
 

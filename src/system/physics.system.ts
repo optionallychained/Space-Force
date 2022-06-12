@@ -62,9 +62,8 @@ export class Physics extends System {
 
             // apply acceleration and velocity
             moverTransform.velocity.set(moverTransform.velocity.x + acceleration.x, moverTransform.velocity.y + acceleration.y);
-            moverTransform.position.set(
-                moverTransform.position.x + (moverTransform.velocity.x * frameDelta / 1000),
-                moverTransform.position.y + (moverTransform.velocity.y * frameDelta / 1000)
+            moverTransform.translate(
+                new Vec2(moverTransform.velocity.x * frameDelta / 1000, moverTransform.velocity.y * frameDelta / 1000)
             );
         }
     }

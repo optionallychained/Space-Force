@@ -12,7 +12,8 @@ export const GAME_STATE = new State({
         game.addSystems(Physics, CircleCollision);
 
         game.world.addEntities(
-            ...Planet.makePair(new Vec2(0, -100), new Vec2(100, 100), Color.red(), 1000, 200),
+            ...Planet.makePair(new Vec2(200, -100), new Vec2(100, 100), true, 2000, 300),
+            ...Planet.makePair(new Vec2(-200, -100), new Vec2(100, 100), false, 1000, 300),
             new Player()
         );
     },
@@ -46,9 +47,11 @@ export const GAME_STATE = new State({
             if (game.input.isKeyDown(Keys.W)) {
                 player.thrustOn();
 
-                // spit particles out the back of the player
-                const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
-                game.world.addEntity(new Particle(particlePosition, transform.angle));
+                if (player.getComponent<Fuel>('Fuel').value) {
+                    // spit particles out the back of the player
+                    const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
+                    game.world.addEntity(new Particle(particlePosition, transform.angle));
+                }
             }
             else {
                 player.thrustOff();
