@@ -1,8 +1,8 @@
-# Thruster Pack (LD38 Remake)
+# Space Force
 
-Remake of an old Ludum Dare entry; a gravity-focused puzzle game
+A gravity-focused puzzle game; remake of an old Ludum Dare entry using Aura
 
 
 ## Play
 
-https://optionallychained.github.io/ld38-thruster-pack-remake
+https://optionallychained.github.io/Space-Force

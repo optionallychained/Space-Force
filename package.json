@@ -1,5 +1,5 @@
 {
-    "name": "aura-template-2d",
+    "name": "space-force",
     "version": "0.1.0",
     "scripts": {
         "lint": "eslint --ext .ts --fix",
