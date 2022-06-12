@@ -8,13 +8,20 @@ import { GravityField } from './gravityField.entity';
 
 export type PlanetType = 'start' | 'deadly' | 'target' | 'musttouch';
 
+const colors = {
+    start: Color.yellow(),
+    deadly: Color.red(),
+    target: Color.green(),
+    musttouch: Color.blue()
+};
+
 export class Planet extends Entity {
 
     // make a pair of Planet + GravityField (visual indicator) w/ GravityField of appropriate scale
     public static makePair(position: Vec2, size: number, mass: number, fieldRadius: number, type: PlanetType): [Planet, GravityField] {
         return [
             new Planet(position, size, mass, fieldRadius, type),
-            new GravityField(position, new Vec2(fieldRadius * 2, fieldRadius * 2))
+            new GravityField(position, fieldRadius * 2, colors[type])
         ];
     }
 
@@ -27,25 +34,18 @@ export class Planet extends Entity {
                 new Model(Geometries.CIRCLE),
                 new CircleCollider(),
                 new Mass(mass),
-                new Gravity(fieldRadius)
+                new Gravity(fieldRadius),
+                new FlatColor(colors[type])
             ]
         });
 
         switch (type) {
-            case 'start':
-                this.addComponent(new FlatColor(Color.yellow()));
-                break;
-
-            case 'target':
-                this.addComponents(new FlatColor(Color.green()));
-                break;
-
             case 'musttouch':
-                this.addComponents(new FlatColor(Color.blue()), new Point());
+                this.addComponents(new Point());
                 break;
 
             case 'deadly':
-                this.addComponents(new FlatColor(Color.red()), new Deadly());
+                this.addComponents(new Deadly());
                 break;
         }
     }

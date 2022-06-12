@@ -5,10 +5,10 @@ export const DASHED_CIRCLE = new Geometry({
     vertices: Float32Array.from((() => {
         const vertices: Array<number> = [];
         const vertexSize = 2;
-        const vertexCount = 30;
+        const points = 60;
 
-        for (let i = vertexSize; i < vertexCount * vertexSize * 0.5; i += vertexSize) {
-            const angle = 2 * i * Math.PI / (vertexCount - 2);
+        for (let i = vertexSize; i < points * vertexSize * 0.5; i += vertexSize) {
+            const angle = 2 * i * Math.PI / (points - 2);
 
             vertices.push(Math.cos(angle) * 0.5);
             vertices.push(Math.sin(angle) * 0.5);
@@ -17,7 +17,7 @@ export const DASHED_CIRCLE = new Geometry({
         return vertices;
     })()),
     vertexSize: 2,
-    vertexCount: 14,
+    vertexCount: 29,
     glShape: GLShape.LINES,
     textureCoordinates: Float32Array.from([
     ])

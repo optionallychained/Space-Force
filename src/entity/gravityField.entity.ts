@@ -5,14 +5,14 @@ export class GravityField extends Entity {
 
     private dir = 0;
 
-    constructor(position: Vec2, scale: Vec2) {
+    constructor(position: Vec2, size: number, color: Color) {
         super({
             tag: 'gravityField',
             components: [
-                new Transform(position, scale),
+                new Transform(position, new Vec2(size, size)),
                 new Shader(ShaderPrograms.BASIC),
                 new Model(DASHED_CIRCLE),
-                new FlatColor(Color.white())
+                new FlatColor(color)
             ]
         });
     }
