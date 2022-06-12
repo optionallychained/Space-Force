@@ -1,5 +1,6 @@
 import { Color, Keys, State, Transform, Vec2 } from 'aura-2d';
 import { Fuel } from '../component/fuel.component';
+import { FuelBar } from '../entity/fuelBar.entity';
 import { Particle } from '../entity/particle.entity';
 import { Planet } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
@@ -14,15 +15,19 @@ export const GAME_STATE = new State({
         game.world.addEntities(
             ...Planet.makePair(new Vec2(200, -100), new Vec2(100, 100), true, 2000, 300),
             ...Planet.makePair(new Vec2(-200, -100), new Vec2(100, 100), false, 1000, 300),
-            new Player()
+            new FuelBar(new Vec2(0, -game.world.dimensions.y / 2 + 25), game.world.dimensions.x - 50),
+            new Player(),
         );
     },
     end: (game) => { },
     tick: (game) => {
+        game.text.clearEntities();
+
         const player = game.world.filterEntitiesByTag('player')[0] as Player | undefined;
 
         if (player) {
             const transform = player.getComponent<Transform>('Transform');
+            const fuel = player.getComponent<Fuel>('Fuel').value;
 
             // death conditions
             if (
@@ -47,7 +52,7 @@ export const GAME_STATE = new State({
             if (game.input.isKeyDown(Keys.W)) {
                 player.thrustOn();
 
-                if (player.getComponent<Fuel>('Fuel').value) {
+                if (fuel) {
                     // spit particles out the back of the player
                     const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
                     game.world.addEntity(new Particle(particlePosition, transform.angle));
@@ -57,13 +62,22 @@ export const GAME_STATE = new State({
                 player.thrustOff();
             }
 
-            game.text.clearEntities();
-            game.text.addString(
-                `Fuel: ${player.getComponent<Fuel>('Fuel').value}`,
-                new Vec2(0, 200),
-                new Vec2(30, 30),
-                Color.white()
-            );
+            if (!fuel) {
+                game.text.addString(
+                    'restart:[R]',
+                    new Vec2(-10 * 0.5 * 25, -game.world.dimensions.y / 2 + 25),
+                    new Vec2(25, 25),
+                    Color.yellow()
+                )
+            }
         }
+
+
+        game.text.addString(
+            'Fuel',
+            new Vec2(-3 * 0.5 * 25, -game.world.dimensions.y / 2 + 25 + 35),
+            new Vec2(25, 25),
+            Color.white()
+        );
     }
 });

@@ -15,7 +15,6 @@ export class Physics extends System {
         const gravitySources = game.world.filterEntitiesByComponentNames('Transform', 'Mass', 'Gravity');
 
         // normal relative movement for particles
-        // TODO might be cool to have particles also affected by gravity?
         for (const particle of game.world.filterEntitiesByTag('particle')) {
             const transform = particle.getComponent<Transform>('Transform');
             transform.move(Vec2.scale(transform.velocity, frameDelta / 1000));
