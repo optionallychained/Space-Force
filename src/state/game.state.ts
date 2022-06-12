@@ -11,7 +11,7 @@ export const GAME_STATE = new State({
     init: (game) => {
         game.addSystems(Physics, CircleCollision);
 
-        loadLevel(game, 4);
+        loadLevel(game, 6);
     },
     end: (game) => {
         game.removeSystems('Physics', 'Collision');

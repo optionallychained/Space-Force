@@ -8,6 +8,8 @@ import { LEVEL_TWO } from './2';
 import { LEVEL_THREE } from './3';
 import { LEVEL_FOUR } from './4';
 import { LEVEL_FIVE } from './5';
+import { LEVEL_SIX } from './6';
+import { LEVEL_SEVEN } from './7';
 
 export interface LevelText {
     text: string;
@@ -34,7 +36,9 @@ const levels: Array<(worldDimensions: Vec2) => Level> = [
     LEVEL_TWO,
     LEVEL_THREE,
     LEVEL_FOUR,
-    LEVEL_FIVE
+    LEVEL_FIVE,
+    LEVEL_SIX,
+    LEVEL_SEVEN,
 ];
 
 export const loadLevel = (game: Game, num: number | 'test'): void => {
