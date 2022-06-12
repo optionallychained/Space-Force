@@ -7,6 +7,7 @@ import { LEVEL_ONE } from './1';
 import { LEVEL_TWO } from './2';
 import { LEVEL_THREE } from './3';
 import { LEVEL_FOUR } from './4';
+import { LEVEL_FIVE } from './5';
 
 export interface LevelText {
     text: string;
@@ -32,39 +33,50 @@ const levels: Array<(worldDimensions: Vec2) => Level> = [
     LEVEL_ONE,
     LEVEL_TWO,
     LEVEL_THREE,
-    LEVEL_FOUR
+    LEVEL_FOUR,
+    LEVEL_FIVE
 ];
 
-export const loadLevel = (game: Game, num: number): void => {
-    const selectedLevel = levels[num](game.world.dimensions);
+export const loadLevel = (game: Game, num: number | 'test'): void => {
+    if (num === 'test') {
+        game.world.addEntities(
+            new Planet(new Vec2(), 100, 1000, 100, 'start'),
+            new Player(new Vec2(0, 200), 100000)
+        );
 
-    // required points = numMustTouch + numPickup
-    let requiredPoints = 0;
-    const entities: Array<Entity> = [];
+        game.setData('displayLevelText', false);
+    }
+    else {
+        const selectedLevel = levels[num](game.world.dimensions);
 
-    for (const planet of selectedLevel.planets) {
-        entities.push(...Planet.makePair(planet.position, planet.size, planet.mass, planet.fieldRadius, planet.type));
+        // required points = numMustTouch + numPickup
+        let requiredPoints = 0;
+        const entities: Array<Entity> = [];
 
-        if (planet.type === 'musttouch') {
-            requiredPoints++;
+        for (const planet of selectedLevel.planets) {
+            entities.push(...Planet.makePair(planet.position, planet.size, planet.mass, planet.fieldRadius, planet.type));
+
+            if (planet.type === 'musttouch') {
+                requiredPoints++;
+            }
         }
+
+        for (const pickupPosition of selectedLevel.pickupPositions) {
+            requiredPoints++;
+
+            entities.push(new Pickup(pickupPosition));
+        }
+
+        game.world.addEntities(
+            ...entities,
+            new FuelBar(new Vec2(0, -game.world.dimensions.y / 2 + 25), game.world.dimensions.x - 50),
+            new Player(selectedLevel.playerPosition, selectedLevel.playerFuel),
+        );
+
+        game.setData('requiredPoints', requiredPoints);
+        game.setData('points', 0);
+        game.setData('displayLevelText', true);
+        game.setData('levelTitle', selectedLevel.title);
+        game.setData('levelDescription', selectedLevel.description);
     }
-
-    for (const pickupPosition of selectedLevel.pickupPositions) {
-        requiredPoints++;
-
-        entities.push(new Pickup(pickupPosition));
-    }
-
-    game.world.addEntities(
-        ...entities,
-        new FuelBar(new Vec2(0, -game.world.dimensions.y / 2 + 25), game.world.dimensions.x - 50),
-        new Player(selectedLevel.playerPosition, selectedLevel.playerFuel),
-    );
-
-    game.setData('requiredPoints', requiredPoints);
-    game.setData('points', 0);
-    game.setData('displayLevelText', true);
-    game.setData('levelTitle', selectedLevel.title);
-    game.setData('levelDescription', selectedLevel.description);
 };
