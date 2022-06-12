@@ -27,8 +27,8 @@ const levels: Array<(worldDimensions: Vec2) => Level> = [
 export const loadLevel = (game: Game, num: number): void => {
     const selectedLevel = levels[num](game.world.dimensions);
 
-    // required points = 1 [target] + numMustTouch + numPickup
-    let requiredPoints = 1;
+    // required points = numMustTouch + numPickup
+    let requiredPoints = 0;
     const entities: Array<Entity> = [];
 
     for (const planet of selectedLevel.planets) {

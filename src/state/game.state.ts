@@ -63,11 +63,6 @@ export const GAME_STATE = new State({
             ) {
                 game.switchToState('dead');
             }
-
-            // win condition
-            if (game.getData<number>('points') >= game.getData<number>('requiredPoints')) {
-                game.switchToState('win');
-            }
         }
 
         // reset

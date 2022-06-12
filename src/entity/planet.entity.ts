@@ -18,7 +18,7 @@ export class Planet extends Entity {
         ];
     }
 
-    constructor(position: Vec2, size: number, mass: number, fieldRadius: number, type: PlanetType) {
+    constructor(position: Vec2, size: number, mass: number, fieldRadius: number, public readonly type: PlanetType) {
         super({
             tag: 'planet',
             components: [
@@ -37,7 +37,7 @@ export class Planet extends Entity {
                 break;
 
             case 'target':
-                this.addComponents(new FlatColor(Color.green()), new Point());
+                this.addComponents(new FlatColor(Color.green()));
                 break;
 
             case 'musttouch':

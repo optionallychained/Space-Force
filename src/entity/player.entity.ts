@@ -3,6 +3,7 @@ import { CircleCollider } from '../component/circleCollider.component';
 import { Fuel } from '../component/fuel.component';
 import { Mass } from '../component/mass.component';
 import { Thrust } from '../component/thrust.component';
+import { Planet } from './planet.entity';
 
 export class Player extends Entity {
 
@@ -12,14 +13,14 @@ export class Player extends Entity {
         super({
             tag: 'player',
             components: [
-                new Transform(position, new Vec2(25, 25)),
+                new Transform(position, new Vec2(25, 30)),
                 new Shader(ShaderPrograms.BASIC),
                 new Model(Geometries.TRIANGLE),
                 new FlatColor(Color.white()),
                 new CircleCollider(),
                 new Mass(15),
                 new Fuel(fuel),
-                new Thrust(50)
+                new Thrust(65)
             ]
         });
     }
@@ -37,6 +38,11 @@ export class Player extends Entity {
 
             // provide enough launch thrust to overcome the planet's gravity
             this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
+
+            // win
+            if ((other as Planet).type === 'target' && game.getData<number>('points') >= game.getData<number>('requiredPoints')) {
+                game.switchToState('win');
+            }
         }
 
         // progress
