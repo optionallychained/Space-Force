@@ -27,7 +27,7 @@ export const GAME_STATE = new State({
         if (player) {
             const transform = player.getComponent<Transform>('Transform');
 
-            // movement
+            // rotation
             if (game.input.isKeyDown(Keys.A)) {
                 player.rotate(-1);
             }
@@ -35,6 +35,7 @@ export const GAME_STATE = new State({
                 player.rotate(1);
             }
 
+            // thrust
             if (game.input.isKeyDown(Keys.W)) {
                 player.thrustOn();
 
@@ -67,6 +68,12 @@ export const GAME_STATE = new State({
             if (game.getData<number>('points') >= game.getData<number>('requiredPoints')) {
                 game.switchToState('win');
             }
+        }
+
+        // reset
+        if (game.input.isKeyDown(Keys.R)) {
+            // interesting circular state switch...
+            game.switchToState('game');
         }
 
         // info readouts
