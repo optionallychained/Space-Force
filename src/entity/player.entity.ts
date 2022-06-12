@@ -56,13 +56,18 @@ export class Player extends Entity {
     }
 
     public thrustOn(): void {
-        const thrust = this.getComponent<Thrust>('Thrust');
+        const fuel = this.getComponent<Fuel>('Fuel');
+        fuel.value = Math.max(fuel.value -= 0.5, 0);
 
-        if (this.landed) {
-            thrust.value = thrust.impulseThrust;
-        }
-        else {
-            thrust.value = thrust.baseThrust;
+        if (fuel.value) {
+            const thrust = this.getComponent<Thrust>('Thrust');
+
+            if (this.landed) {
+                thrust.value = thrust.impulseThrust;
+            }
+            else {
+                thrust.value = thrust.baseThrust;
+            }
         }
     }
 

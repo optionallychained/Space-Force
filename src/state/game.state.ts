@@ -1,4 +1,5 @@
 import { Color, Keys, State, Transform, Vec2 } from 'aura-2d';
+import { Fuel } from '../component/fuel.component';
 import { Particle } from '../entity/particle.entity';
 import { Planet } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
@@ -22,6 +23,19 @@ export const GAME_STATE = new State({
         if (player) {
             const transform = player.getComponent<Transform>('Transform');
 
+            // death conditions
+            if (
+                transform.position.x - transform.scale.x / 2 >= game.world.dimensions.x / 2
+                ||
+                transform.position.x + transform.scale.x / 2 <= -game.world.dimensions.x / 2
+                ||
+                transform.position.y - transform.scale.y / 2 >= game.world.dimensions.y / 2
+                ||
+                transform.position.y + transform.scale.y / 2 <= -game.world.dimensions.y / 2
+            ) {
+                game.switchToState('dead');
+            }
+
             if (game.input.isKeyDown(Keys.A)) {
                 player.rotate(-1);
             }
@@ -39,6 +53,14 @@ export const GAME_STATE = new State({
             else {
                 player.thrustOff();
             }
+
+            game.text.clearEntities();
+            game.text.addString(
+                `Fuel: ${player.getComponent<Fuel>('Fuel').value}`,
+                new Vec2(0, 200),
+                new Vec2(30, 30),
+                Color.white()
+            );
         }
     }
 });
