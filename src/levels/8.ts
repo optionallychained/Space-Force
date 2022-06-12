@@ -1,9 +1,9 @@
 import { Vec2 } from 'aura-2d';
 import { Level } from './levels';
 
-export const LEVEL_SEVEN = (worldDimensions: Vec2): Level => ({
+export const LEVEL_EIGHT = (worldDimensions: Vec2): Level => ({
     title: {
-        text: 'crowded',
+        text: 'hardcore',
         fontSize: 50
     },
     description: {
@@ -11,7 +11,7 @@ export const LEVEL_SEVEN = (worldDimensions: Vec2): Level => ({
         fontSize: 16
     },
     playerPosition: new Vec2(0, 120),
-    playerFuel: 175,
+    playerFuel: 200,
     pickupPositions: [
         new Vec2(worldDimensions.x / 2 - 150, -worldDimensions.y / 2 + 350),
         new Vec2(),
@@ -45,6 +45,13 @@ export const LEVEL_SEVEN = (worldDimensions: Vec2): Level => ({
             mass: 2750,
             fieldRadius: 400,
             type: 'deadly'
+        },
+        {
+            position: new Vec2(-worldDimensions.x / 2 + 150, worldDimensions.y / 2 - 300),
+            size: 150,
+            mass: 3500,
+            fieldRadius: 350,
+            type: 'musttouch'
         },
         {
             position: new Vec2(-worldDimensions.x / 2 + 100, -worldDimensions.y / 2 + 100),
