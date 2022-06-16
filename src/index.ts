@@ -11,7 +11,10 @@ const game = new Game({
         GAME_STATE,
         WIN_STATE,
         DEAD_STATE
-    ]
+    ],
+    init: () => {
+        game.setData('level', 0);
+    }
 });
 
-game.start(GAME_STATE.name);
+game.start(LEVEL_SELECT_STATE.name);

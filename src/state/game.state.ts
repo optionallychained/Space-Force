@@ -11,7 +11,7 @@ export const GAME_STATE = new State({
     init: (game) => {
         game.addSystems(Physics, CircleCollision);
 
-        loadLevel(game, 1);
+        loadLevel(game, game.getData<number>('level'));
     },
     end: (game) => {
         game.removeSystems('Physics', 'Collision');
@@ -121,8 +121,8 @@ export const GAME_STATE = new State({
             const desc = game.getData<LevelText>('levelDescription');
 
             game.ui.addPanel(
-                new Vec2(0, game.world.dimensions.y / 2 - title.fontSize - desc.fontSize),
-                new Vec2(desc.text.length * desc.fontSize + 10, title.fontSize + desc.fontSize + 10 + 35),
+                new Vec2(0, game.world.dimensions.y / 2 - title.fontSize),
+                new Vec2(game.world.dimensions.x, title.fontSize * 2.5 + desc.fontSize * 2),
                 Color.grey(0.2)
             );
 

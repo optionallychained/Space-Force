@@ -42,6 +42,8 @@ const levels: Array<(worldDimensions: Vec2) => Level> = [
     LEVEL_EIGHT
 ];
 
+export const LEVEL_COUNT = levels.length;
+
 export const loadLevel = (game: Game, num: number | 'test'): void => {
     if (num === 'test') {
         game.world.addEntities(
