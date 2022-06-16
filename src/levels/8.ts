@@ -12,8 +12,8 @@ export const LEVEL_EIGHT = (worldDimensions: Vec2): Level => ({
     },
     playerPosition: new Vec2(0, 120),
     playerFuel: 200,
-    threeStar: 70,
-    twoStar: 40,
+    threeStar: 32.5,
+    twoStar: 17.5,
     pickupPositions: [
         new Vec2(worldDimensions.x / 2 - 150, -worldDimensions.y / 2 + 350),
         new Vec2(),

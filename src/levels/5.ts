@@ -11,9 +11,9 @@ export const LEVEL_FIVE = (worldDimensions: Vec2): Level => ({
         fontSize: 18
     },
     playerPosition: new Vec2(worldDimensions.x / 2 - 150, -worldDimensions.y / 2 + 250),
-    playerFuel: 165,
-    threeStar: 70,
-    twoStar: 40,
+    playerFuel: 180,
+    threeStar: 25,
+    twoStar: 12.5,
     pickupPositions: [],
     planets: [
         {

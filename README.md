@@ -1,6 +1,6 @@
 # Space Force
 
-A gravity-focused puzzle game; remake of an old Ludum Dare entry using Aura
+A gravity-focused skill game; remake of an old Ludum Dare entry using Aura
 
 
 ## Play
