@@ -49,6 +49,7 @@ export class Player extends Entity {
         // progress
         if (other.hasComponent('Point')) {
             game.setData('points', game.getData<number>('points') + 1);
+            other.removeComponent('Point');
         }
 
         // death

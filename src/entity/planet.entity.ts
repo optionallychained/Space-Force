@@ -49,10 +49,4 @@ export class Planet extends Entity {
                 break;
         }
     }
-
-    public onCollisionStart(game: Game, other: Entity): void {
-        if (other.tag === 'player') {
-            this.removeComponent('Point');
-        }
-    }
 }
