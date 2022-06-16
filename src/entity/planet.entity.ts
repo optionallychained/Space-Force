@@ -1,4 +1,4 @@
-import { Color, Entity, FlatColor, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
+import { Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
 import { CircleCollider } from '../component/circleCollider.component';
 import { Deadly } from '../component/deadly.component';
 import { Gravity } from '../component/gravity.component';
@@ -47,6 +47,12 @@ export class Planet extends Entity {
             case 'deadly':
                 this.addComponents(new Deadly());
                 break;
+        }
+    }
+
+    public onCollisionStart(game: Game, other: Entity): void {
+        if (other.tag === 'player') {
+            this.removeComponent('Point');
         }
     }
 }
