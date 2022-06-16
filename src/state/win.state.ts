@@ -1,5 +1,5 @@
 import { Color, Keys, State, Vec2 } from 'aura-2d';
-import { loadLevel } from '../levels/levels';
+import { LEVEL_COUNT, loadLevel } from '../levels/levels';
 
 export const WIN_STATE = new State({
     name: 'win',
@@ -15,13 +15,21 @@ export const WIN_STATE = new State({
         game.text.clearEntities();
         game.ui.clearEntities();
 
+        const lastLevel = game.getData<number>('level') === LEVEL_COUNT - 1;
+
         if (game.input.isKeyDown(Keys.R)) {
             game.switchToState('game');
         }
 
         if (game.input.isKeyDown(Keys.SPACE)) {
-            game.setData('level', game.getData<number>('level') + 1);
-            game.switchToState('game');
+            if (lastLevel) {
+                game.setData('disablespace', true);
+                game.switchToState('levelselect');
+            }
+            else {
+                game.setData('level', game.getData<number>('level') + 1);
+                game.switchToState('game');
+            }
         }
 
         // info readouts
@@ -60,7 +68,7 @@ export const WIN_STATE = new State({
         );
 
         game.text.addString(
-            '[space]:next level',
+            lastLevel ? '[space]:select level' : '[space]:next level',
             new Vec2(-game.world.dimensions.x / 2 + 20, -game.world.dimensions.y / 2 + 35),
             new Vec2(25, 25),
             Color.white()
