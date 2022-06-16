@@ -21,6 +21,8 @@ export interface Level {
     description: LevelText,
     playerPosition: Vec2;
     playerFuel: number;
+    threeStar: number;
+    twoStar: number;
     pickupPositions: Array<Vec2>;
     planets: Array<{
         position: Vec2;
@@ -82,6 +84,8 @@ export const loadLevel = (game: Game, num: number | 'test', player = true): void
 
         game.setData('requiredPoints', requiredPoints);
         game.setData('points', 0);
+        game.setData('threeStar', selectedLevel.threeStar);
+        game.setData('twoStar', selectedLevel.twoStar);
         game.setData('displayLevelText', true);
         game.setData('levelTitle', selectedLevel.title);
         game.setData('levelDescription', selectedLevel.description);

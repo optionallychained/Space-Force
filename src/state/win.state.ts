@@ -16,26 +16,14 @@ export const WIN_STATE = new State({
         game.ui.clearEntities();
 
         const lastLevel = game.getData<number>('level') === LEVEL_COUNT - 1;
-
-        if (game.input.isKeyDown(Keys.R)) {
-            game.switchToState('game');
-        }
-
-        if (game.input.isKeyDown(Keys.SPACE)) {
-            if (lastLevel) {
-                game.setData('disablespace', true);
-                game.switchToState('levelselect');
-            }
-            else {
-                game.setData('level', game.getData<number>('level') + 1);
-                game.switchToState('game');
-            }
-        }
+        const fuelRemaining = game.getData<number>('fuelRemaining');
+        const remainingStr = `fuel remaining: ${fuelRemaining} %`;
+        const star = fuelRemaining >= game.getData<number>('threeStar') ? 3 : (fuelRemaining >= game.getData<number>('twoStar') ? 2 : 1);
 
         // info readouts
         game.ui.addPanel(
-            new Vec2(0, -5),
-            new Vec2(game.world.dimensions.x, 150),
+            new Vec2(0, 0),
+            new Vec2(game.world.dimensions.x, 190),
             Color.grey(0.2)
         );
 
@@ -47,18 +35,25 @@ export const WIN_STATE = new State({
 
         game.text.addString(
             'well done!',
-            new Vec2(-9 * 0.5 * 50, 25),
+            new Vec2(-9 * 0.5 * 50, 50),
             new Vec2(50, 50),
             Color.white()
         );
 
-        const fuelRemaining = `fuel remaining: ${game.getData<number>('fuelRemaining')} %`;
         game.text.addString(
-            fuelRemaining,
-            new Vec2(-(fuelRemaining.length - 1) * 0.5 * 30, -50),
+            remainingStr,
+            new Vec2(-(remainingStr.length - 1) * 0.5 * 30, -10),
             new Vec2(30, 30),
             Color.white()
         );
+
+        game.text.addString(
+            `Stars: ${star}`,
+            new Vec2(-7 * 0.5 * 30, -60),
+            new Vec2(30, 30),
+            Color.white()
+        );
+
 
         game.text.addString(
             '[R]:reset',
@@ -73,5 +68,21 @@ export const WIN_STATE = new State({
             new Vec2(25, 25),
             Color.white()
         );
+
+        // mechanics
+        if (game.input.isKeyDown(Keys.R)) {
+            game.switchToState('game');
+        }
+
+        if (game.input.isKeyDown(Keys.SPACE)) {
+            if (lastLevel) {
+                game.setData('disablespace', true);
+                game.switchToState('levelselect');
+            }
+            else {
+                game.setData('level', game.getData<number>('level') + 1);
+                game.switchToState('game');
+            }
+        }
     }
 });

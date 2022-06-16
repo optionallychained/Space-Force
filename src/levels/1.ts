@@ -12,6 +12,8 @@ export const LEVEL_ONE = (worldDimensions: Vec2): Level => ({
     },
     playerPosition: new Vec2(0, -worldDimensions.y / 2 + 150),
     playerFuel: 100,
+    threeStar: 70,
+    twoStar: 40,
     pickupPositions: [],
     planets: [
         {
