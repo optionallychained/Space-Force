@@ -40,6 +40,8 @@ export class Player extends Entity {
 
             // win
             if ((other as Planet).type === 'target' && game.getData<number>('points') >= game.getData<number>('requiredPoints')) {
+                const fuel = this.getComponent<Fuel>('Fuel');
+                game.setData('fuelRemaining', (fuel.value / fuel.initialValue * 100).toFixed(2))
                 game.switchToState('win');
             }
         }

@@ -26,53 +26,6 @@ export const GAME_STATE = new State({
         const player = game.world.filterEntitiesByTag('player')[0] as Player | undefined;
         const { value: fuel, initialValue: initialFuel } = player?.getComponent<Fuel>('Fuel') ?? { value: -1, initialValue: -1 };
 
-        if (player) {
-            const transform = player.getComponent<Transform>('Transform');
-
-            // rotation
-            if (game.input.isKeyDown(Keys.A)) {
-                player.rotate(-1);
-            }
-            else if (game.input.isKeyDown(Keys.D)) {
-                player.rotate(1);
-            }
-
-            // thrust
-            if (game.input.isKeyDown(Keys.W)) {
-                player.thrustOn();
-
-                if (fuel) {
-                    // spit particles out the back of the player
-                    const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
-                    game.world.addEntity(new Particle(particlePosition, transform.angle));
-                }
-
-                game.setData('displayLevelText', false);
-            }
-            else {
-                player.thrustOff();
-            }
-
-            // death condition
-            if (
-                transform.position.x - transform.scale.x / 2 >= game.world.dimensions.x / 2
-                ||
-                transform.position.x + transform.scale.x / 2 <= -game.world.dimensions.x / 2
-                ||
-                transform.position.y - transform.scale.y / 2 >= game.world.dimensions.y / 2
-                ||
-                transform.position.y + transform.scale.y / 2 <= -game.world.dimensions.y / 2
-            ) {
-                game.switchToState('dead');
-            }
-        }
-
-        // reset
-        if (game.input.isKeyDown(Keys.R)) {
-            // interesting circular state switch...
-            game.switchToState('game');
-        }
-
         // info readouts
         game.ui.addPanel(
             new Vec2(0, -game.world.dimensions.y / 2 + 35 + 10),
@@ -139,6 +92,54 @@ export const GAME_STATE = new State({
                 new Vec2(desc.fontSize, desc.fontSize),
                 Color.rgba(255, 0, 255)
             );
+        }
+
+        // mechanics
+        if (player) {
+            const transform = player.getComponent<Transform>('Transform');
+
+            // rotation
+            if (game.input.isKeyDown(Keys.A)) {
+                player.rotate(-1);
+            }
+            else if (game.input.isKeyDown(Keys.D)) {
+                player.rotate(1);
+            }
+
+            // thrust
+            if (game.input.isKeyDown(Keys.W)) {
+                player.thrustOn();
+
+                if (fuel) {
+                    // spit particles out the back of the player
+                    const particlePosition = Vec2.sub(transform.position, Vec2.scale(transform.up, transform.scale.y / 2 + 5));
+                    game.world.addEntity(new Particle(particlePosition, transform.angle));
+                }
+
+                game.setData('displayLevelText', false);
+            }
+            else {
+                player.thrustOff();
+            }
+
+            // death condition
+            if (
+                transform.position.x - transform.scale.x / 2 >= game.world.dimensions.x / 2
+                ||
+                transform.position.x + transform.scale.x / 2 <= -game.world.dimensions.x / 2
+                ||
+                transform.position.y - transform.scale.y / 2 >= game.world.dimensions.y / 2
+                ||
+                transform.position.y + transform.scale.y / 2 <= -game.world.dimensions.y / 2
+            ) {
+                game.switchToState('dead');
+            }
+        }
+
+        // reset
+        if (game.input.isKeyDown(Keys.R)) {
+            // interesting circular state switch...
+            game.switchToState('game');
         }
     }
 });

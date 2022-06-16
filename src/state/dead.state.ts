@@ -46,14 +46,14 @@ export const DEAD_STATE = new State({
 
         game.text.addString(
             '[R]:reset',
-            new Vec2(-game.world.dimensions.x / 2 + 20, -game.world.dimensions.y / 2 + 35),
+            new Vec2(game.world.dimensions.x / 2 - (9 * 25), -game.world.dimensions.y / 2 + 35),
             new Vec2(25, 25),
             Color.white()
         );
 
         game.text.addString(
             '[space]:select level',
-            new Vec2(game.world.dimensions.x / 2 - (20 * 25), -game.world.dimensions.y / 2 + 35),
+            new Vec2(-game.world.dimensions.x / 2 + 20, -game.world.dimensions.y / 2 + 35),
             new Vec2(25, 25),
             Color.white()
         );
