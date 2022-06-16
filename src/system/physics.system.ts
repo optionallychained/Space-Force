@@ -11,7 +11,7 @@ export class Physics extends System {
     }
 
     public tick(game: Game, frameDelta: number): void {
-        const movers = game.world.filterEntitiesByComponentNames('Transform', 'Mass', 'Thrust');
+        const movers = game.world.filterEntitiesByComponentNames('Transform', 'Mass', 'Thrust').filter((e) => !e.hasComponent('Frozen'));
         const gravitySources = game.world.filterEntitiesByComponentNames('Transform', 'Mass', 'Gravity');
 
         // normal relative movement for particles
@@ -62,7 +62,7 @@ export class Physics extends System {
             // apply acceleration and velocity
             moverTransform.velocity.set(moverTransform.velocity.x + acceleration.x, moverTransform.velocity.y + acceleration.y);
             moverTransform.translate(
-                new Vec2(moverTransform.velocity.x * frameDelta / 1000, moverTransform.velocity.y * frameDelta / 1000)
+                Vec2.scale(moverTransform.velocity, frameDelta / 1000)
             );
         }
     }

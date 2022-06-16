@@ -2,12 +2,11 @@ import { Angle, Color, Entity, FlatColor, Game, Geometries, Model, Shader, Shade
 import { CircleCollider } from '../component/circleCollider.component';
 import { Fuel } from '../component/fuel.component';
 import { Mass } from '../component/mass.component';
+import { Frozen } from '../component/frozen.component';
 import { Thrust } from '../component/thrust.component';
 import { Planet } from './planet.entity';
 
 export class Player extends Entity {
-
-    private landed = false;
 
     constructor(position: Vec2, fuel: number) {
         super({
@@ -34,7 +33,7 @@ export class Player extends Entity {
 
             transform.rotate(-transform.angle + Vec2.angleBetween(direction, new Vec2(0, 1)) * (direction.x < 0 ? -1 : 1));
             transform.velocity.set(0, 0);
-            this.landed = true;
+            this.addComponent(new Frozen());
 
             // provide enough launch thrust to overcome the planet's gravity
             this.getComponent<Thrust>('Thrust').impulseThrust = other.getComponent<Mass>('Mass').value;
@@ -56,20 +55,6 @@ export class Player extends Entity {
         }
     }
 
-    public onCollisionContinue(game: Game, other: Entity): void {
-        if (other.tag === 'planet') {
-            // TODO doesn't work properly, since physics system applies velocity to position directly every tick
-            const transform = this.getComponent<Transform>('Transform')
-            transform.velocity.set(-transform.velocity.x, -transform.velocity.y);
-        }
-    }
-
-    public onCollisionEnd(game: Game, other: Entity): void {
-        if (other.tag === 'planet') {
-            this.landed = false;
-        }
-    }
-
     public thrustOn(): void {
         const fuel = this.getComponent<Fuel>('Fuel');
         fuel.value = Math.max(fuel.value -= 0.5, 0);
@@ -77,8 +62,9 @@ export class Player extends Entity {
         if (fuel.value) {
             const thrust = this.getComponent<Thrust>('Thrust');
 
-            if (this.landed) {
+            if (this.hasComponent('Frozen')) {
                 thrust.value = thrust.impulseThrust;
+                this.removeComponent('Frozen');
             }
             else {
                 thrust.value = thrust.baseThrust;
@@ -91,7 +77,7 @@ export class Player extends Entity {
     }
 
     public rotate(dir: 1 | -1): void {
-        if (!this.landed) {
+        if (!this.hasComponent('Frozen')) {
             this.getComponent<Transform>('Transform').rotate(Angle.toRadians(2) * dir);
         }
     }
