@@ -1,6 +1,5 @@
 import { Entity, Game, Vec2 } from 'aura-2d';
 import { Pickup } from '../entity/pickup.entity';
-import { FuelBar } from '../entity/fuelBar.entity';
 import { Planet, PlanetType } from '../entity/planet.entity';
 import { Player } from '../entity/player.entity';
 import { LEVEL_ONE } from './1';
@@ -75,7 +74,6 @@ export const loadLevel = (game: Game, num: number | 'test'): void => {
 
         game.world.addEntities(
             ...entities,
-            new FuelBar(new Vec2(0, -game.world.dimensions.y / 2 + 25), game.world.dimensions.x - 50),
             new Player(selectedLevel.playerPosition, selectedLevel.playerFuel),
         );
 

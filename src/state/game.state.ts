@@ -11,18 +11,20 @@ export const GAME_STATE = new State({
     init: (game) => {
         game.addSystems(Physics, CircleCollision);
 
-        loadLevel(game, 7);
+        loadLevel(game, 1);
     },
     end: (game) => {
         game.removeSystems('Physics', 'Collision');
         game.world.clearEntities();
         game.text.clearEntities();
+        game.ui.clearEntities();
     },
     tick: (game) => {
         game.text.clearEntities();
+        game.ui.clearEntities();
 
         const player = game.world.filterEntitiesByTag('player')[0] as Player | undefined;
-        const fuel = player?.getComponent<Fuel>('Fuel').value ?? -1;
+        const { value: fuel, initialValue: initialFuel } = player?.getComponent<Fuel>('Fuel') ?? { value: -1, initialValue: -1 };
 
         if (player) {
             const transform = player.getComponent<Transform>('Transform');
@@ -72,25 +74,57 @@ export const GAME_STATE = new State({
         }
 
         // info readouts
+        game.ui.addPanel(
+            new Vec2(0, -game.world.dimensions.y / 2 + 35 + 10),
+            new Vec2(game.world.dimensions.x, 80),
+            Color.grey(0.2)
+        );
+
+        game.ui.addPanel(
+            new Vec2(0, -game.world.dimensions.y / 2 + 25),
+            new Vec2((game.world.dimensions.x - 25) * fuel / initialFuel, 25),
+            Color.yellow()
+        );
+
         game.text.addString(
-            'Fuel',
-            new Vec2(-3 * 0.5 * 25, -game.world.dimensions.y / 2 + 25 + 35),
+            '[W]:thrust',
+            new Vec2(-game.world.dimensions.x / 2 + 20, -game.world.dimensions.y / 2 + 25 + 35),
             new Vec2(25, 25),
             Color.white()
         );
 
+        game.text.addString(
+            '[A/D]:rotate',
+            new Vec2(game.world.dimensions.x / 2 - (12 * 25), -game.world.dimensions.y / 2 + 25 + 35),
+            new Vec2(25, 25),
+            Color.white()
+        );
+
+        game.text.addString(
+            '[R]:reset',
+            new Vec2(-8 * 0.5 * 25, -game.world.dimensions.y / 2 + 25 + 35),
+            new Vec2(25, 25),
+            Color.white()
+        )
+
         if (!fuel) {
             game.text.addString(
-                'restart:[R]',
-                new Vec2(-10 * 0.5 * 25, -game.world.dimensions.y / 2 + 25),
+                'out of fuel!',
+                new Vec2(-11 * 0.5 * 25, -game.world.dimensions.y / 2 + 25),
                 new Vec2(25, 25),
-                Color.yellow()
-            )
+                Color.red()
+            );
         }
 
         if (game.getData<boolean>('displayLevelText')) {
             const title = game.getData<LevelText>('levelTitle');
             const desc = game.getData<LevelText>('levelDescription');
+
+            game.ui.addPanel(
+                new Vec2(0, game.world.dimensions.y / 2 - title.fontSize - desc.fontSize),
+                new Vec2(desc.text.length * desc.fontSize + 10, title.fontSize + desc.fontSize + 10 + 35),
+                Color.grey(0.2)
+            );
 
             game.text.addString(
                 title.text,
@@ -103,7 +137,7 @@ export const GAME_STATE = new State({
                 desc.text,
                 new Vec2(-(desc.text.length - 1) * 0.5 * desc.fontSize, game.world.dimensions.y / 2 - title.fontSize - desc.fontSize - 35),
                 new Vec2(desc.fontSize, desc.fontSize),
-                Color.yellow()
+                Color.rgba(255, 0, 255)
             );
         }
     }
