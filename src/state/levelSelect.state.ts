@@ -46,7 +46,12 @@ export const LEVEL_SELECT_STATE = new State({
         }
 
         if (game.input.isKeyDown(Keys.SPACE)) {
-            game.switchToState('game');
+            if (!game.getData<boolean>('disablespace')) {
+                game.switchToState('game');
+            }
+        }
+        else {
+            game.setData<boolean>('disablespace', false);
         }
 
         // info readouts

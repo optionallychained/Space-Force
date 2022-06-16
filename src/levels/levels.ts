@@ -44,7 +44,7 @@ const levels: Array<(worldDimensions: Vec2) => Level> = [
 
 export const LEVEL_COUNT = levels.length;
 
-export const loadLevel = (game: Game, num: number | 'test'): void => {
+export const loadLevel = (game: Game, num: number | 'test', player = true): void => {
     if (num === 'test') {
         game.world.addEntities(
             new Planet(new Vec2(), 100, 1000, 100, 'start'),
@@ -74,10 +74,11 @@ export const loadLevel = (game: Game, num: number | 'test'): void => {
             entities.push(new Pickup(pickupPosition));
         }
 
-        game.world.addEntities(
-            ...entities,
-            new Player(selectedLevel.playerPosition, selectedLevel.playerFuel),
-        );
+        game.world.addEntities(...entities);
+
+        if (player) {
+            game.world.addEntity(new Player(selectedLevel.playerPosition, selectedLevel.playerFuel))
+        }
 
         game.setData('requiredPoints', requiredPoints);
         game.setData('points', 0);
